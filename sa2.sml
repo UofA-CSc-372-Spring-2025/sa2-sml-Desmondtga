@@ -1,6 +1,6 @@
 (* Solutions to SA2 assignment, Intro to ML *)
 
-(* Name:                                    *)
+(* Name: Desmond Goodman-Ahearn             *)
 (* Time spent on HW6:
 *)
 
@@ -20,29 +20,102 @@ val () =
     (fn () => mynull [])
     true
 
+val () =
+    Unit.checkExpectWith Bool.toString "mynull [1] should be false"
+    (fn () => mynull [1])
+    false
+
+val () =
+    Unit.checkExpectWith Bool.toString "mynull [1,2,3] should be false"
+    (fn () => mynull [1,2,3])
+    false
+
+val () =
+    Unit.checkExpectWith Bool.toString "mynull [[],[],[]] should be false"
+    (fn () => mynull [[],[],[]])
+    false
 
 (**** Problem B ****)
-(*
-fun firstVowel _ = false
+
+fun firstVowel (#"a"::_) = true
+  | firstVowel (#"e"::_) = true
+  | firstVowel (#"i"::_) = true
+  | firstVowel (#"o"::_) = true
+  | firstVowel (#"u"::_) = true
+  | firstVowel _ = false
 
 val () =
     Unit.checkExpectWith Bool.toString "firstVowel 'ack' should be true"
     (fn () => firstVowel [#"a",#"c",#"k"])
     true
-*)
+
+val () =
+    Unit.checkExpectWith Bool.toString "firstVowel 'bck' should be false"
+    (fn () => firstVowel [#"b",#"c",#"k"])
+    false
+
+val () =
+    Unit.checkExpectWith Bool.toString "firstVowel 'a' should be true"
+    (fn () => firstVowel [#"a"])
+    true
+
+val () =
+    Unit.checkExpectWith Bool.toString "firstVowel 'e' should be true"
+    (fn () => firstVowel [#"e"])
+    true
+
+val () =
+    Unit.checkExpectWith Bool.toString "firstVowel 'i' should be true"
+    (fn () => firstVowel [#"i"])
+    true
+
+val () =
+    Unit.checkExpectWith Bool.toString "firstVowel 'o' should be true"
+    (fn () => firstVowel [#"o"])
+    true
+
+val () =
+    Unit.checkExpectWith Bool.toString "firstVowel 'u' should be true"
+    (fn () => firstVowel [#"u"])
+    true
+
+val () =
+    Unit.checkExpectWith Bool.toString "firstVowel '' should be false"
+    (fn () => firstVowel [])
+    false
+
 (**** Problem C ****)
-(*
-fun reverse xs = xs
+
+fun reverse l = foldl (fn (x, acc) => x::acc) [] l
+
+val () =
+  Unit.checkExpectWith (Unit.listString Int.toString) 
+  "reverse [] should be []"
+  (fn () => reverse [])
+  []
+
+val () =
+  Unit.checkExpectWith (Unit.listString Int.toString) 
+  "reverse [1] should be [1]"
+  (fn () => reverse [1])
+  [1]
 
 val () =
   Unit.checkExpectWith (Unit.listString Int.toString) 
   "reverse [1,2] should be [2,1]"
   (fn () => reverse [1,2])
   [2,1]
-*)
+
+val () =
+  Unit.checkExpectWith (Unit.listString Int.toString) 
+  "reverse [1,2,3] should be [3,2,1]"
+  (fn () => reverse [1,2,3])
+  [3,2,1]
+
 (**** Problem D ****)
-(*
-fun minlist _ = 0
+
+fun minlist [] = raise Match
+  | minlist (x0::xs) = foldl (fn (x, m) => Int.min(m, x)) x0 xs
 
 val () =
   Unit.checkExnWith Int.toString
@@ -54,17 +127,66 @@ val () =
   "minlist [1,2,3,4,0] should be 0"
   (fn () => minlist [1,2,3,4,0])
   0
-*)
+
+val () =
+  Unit.checkExpectWith Int.toString
+  "minlist [1,2,3,4] should be 1"
+  (fn () => minlist [1,2,3,4])
+  1
+
+val () =
+  Unit.checkExpectWith Int.toString
+  "minlist [1,2,~3,4] should be ~3"
+  (fn () => minlist [1,2,~3,4])
+  ~3
+
+val () =
+  Unit.checkExpectWith Int.toString
+  "minlist [1] should be 1"
+  (fn () => minlist [1])
+  1
+
 (**** Problem E ****)
-(*
+
 exception Mismatch
 
-fun zip _ = []
-*)
+fun zip ([], (_::_)) = raise Mismatch
+  | zip ((_::_), []) = raise Mismatch
+  | zip ([], []) = []
+  | zip (x::xs, y::ys) = (x,y) :: zip (xs, ys)
+
+val () =
+  Unit.checkExnWith (Unit.listString (Unit.pairString Int.toString Int.toString))
+  "zip ([], [1]) should raise an exception"
+  (fn () => zip ([]: int list, [1]))
+
+val () =
+  Unit.checkExnWith (Unit.listString (Unit.pairString Int.toString Int.toString))
+  "zip ([1], []) should raise an exception"
+  (fn () => zip ([1], []: int list))
+
+val () =
+  Unit.checkExpectWith (Unit.listString (Unit.pairString Int.toString Int.toString))
+  "zip ([], []) should return []"
+  (fn () => zip ([], []))
+  []
+
+val () =
+  Unit.checkExpectWith (Unit.listString (Unit.pairString Int.toString Int.toString))
+  "zip ([1], [1]) should return [(1,1)]"
+  (fn () => zip ([1], [1]))
+  [(1,1)]
+
+val () =
+  Unit.checkExpectWith (Unit.listString (Unit.pairString Int.toString Int.toString))
+  "zip ([1], [1]) should return [(1,1)]"
+  (fn () => zip ([1,2], [2,1]))
+  [(1,2),(2,1)]
+
 (**** Problem F ****)
-(*
-fun concat xs = xs
-*)
+
+(* fun concat xs = xs *)
+
 (**** Problem G ****)
 (*
 fun isDigit _    = false;
